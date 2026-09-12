@@ -16,7 +16,13 @@
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D0%A0%D0%BE%D0%B7%D0%BA%D0%BB%D0%B0%D0%B4%20%D0%9F%D0%A0-14%22%2C%22short_name%22%3A%22%D0%9F%D0%A0-14%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20rx%3D'22'%20fill%3D'%23e11d48'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'54%25'%20dominant-baseline%3D'central'%20text-anchor%3D'middle'%20fill%3D'%23ffffff'%20font-family%3D'Arial%2C%20sans-serif'%20font-weight%3D'900'%20font-size%3D'44'%3E%D0%9F%D0%A0%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      transition: background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1), 
+                  color 0.45s cubic-bezier(0.4, 0, 0.2, 1), 
+                  border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1), 
+                  box-shadow 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     
     :root {
       --bg-page: #0f172a;
@@ -27,7 +33,6 @@
       --card-base-bg: #1e293b;
       --card-even-row: #273549;
       
-      /* Рядок заголовка в темній темі: #1E3A8A */
       --header-bg: #1E3A8A;
       --header-text: #ffffff;
       --header-tag-bg: rgba(0, 0, 0, 0.32);
@@ -62,7 +67,6 @@
       --card-base-bg: #f1f5f9;
       --card-even-row: #e2e8f0;
       
-      /* Рядок заголовка у світлій темі: темно-сірий */
       --header-bg: #334155;
       --header-text: #ffffff;
       --header-tag-bg: rgba(0, 0, 0, 0.28);
@@ -94,7 +98,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
       color: var(--text-main);
-      transition: background-color 0.25s, color 0.25s;
     }
 
     .schedule-container {
@@ -171,7 +174,6 @@
     }
     .offline-badge.show { display: inline-flex; }
 
-    /* Кнопка звуку */
     .icon-action-btn {
       background-color: var(--card-border);
       border: none;
@@ -184,12 +186,16 @@
       cursor: pointer;
       color: var(--text-main);
       font-size: 13.5px;
-      transition: all 0.2s;
+      user-select: none;
     }
     .icon-action-btn:hover {
       opacity: 0.85;
     }
+    .icon-action-btn:active {
+      transform: scale(0.92);
+    }
 
+    /* Анімація кнопки перемикання теми */
     .theme-toggle-btn {
       background-color: var(--card-border);
       border: none;
@@ -202,7 +208,21 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s;
+      user-select: none;
+      overflow: hidden;
+    }
+    .theme-toggle-btn:active {
+      transform: scale(0.95);
+    }
+
+    .theme-icon-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .theme-toggle-btn.animating .theme-icon-box {
+      transform: rotate(360deg) scale(1.2);
     }
 
     .day-tabs {
@@ -227,7 +247,6 @@
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all 0.2s;
     }
 
     .tab-btn.active {
@@ -268,7 +287,6 @@
       align-items: center;
       color: var(--header-text);
       background-color: var(--header-bg);
-      transition: background-color 0.25s;
     }
 
     .day-header .tag {
@@ -288,7 +306,6 @@
 
     .classes-table tr {
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background-color 0.2s;
     }
 
     body.light-mode .classes-table tr {
@@ -310,7 +327,6 @@
       box-shadow: inset 4px 0 0 0 var(--active-row-border);
     }
 
-    /* Пульсуючий червоний кружечок */
     .live-dot-wrap {
       display: inline-flex;
       position: relative;
@@ -450,7 +466,6 @@
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      transition: background-color 0.15s, color 0.15s;
       vertical-align: middle;
     }
     .copy-btn:hover {
@@ -497,7 +512,6 @@
       font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s;
     }
     .share-pair-btn:hover { background-color: var(--btn-share-hover); }
     .share-pair-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.2px; fill: none; }
@@ -535,7 +549,7 @@
       gap: 8px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 99999;
     }
 
@@ -553,6 +567,9 @@
       background-color: #10b981;
       color: #ffffff;
       border-radius: 50%;
+    }
+    .toast-icon.cross-icon {
+      background-color: #ef4444;
     }
 
     .toast-icon svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 3px; fill: none; }
@@ -669,8 +686,9 @@
       <button class="icon-action-btn" id="sound-btn" onclick="toggleSound()" title="Звуки">
         <span id="sound-icon">🔊</span>
       </button>
-      <button class="theme-toggle-btn" onclick="toggleTheme()">
-        <span id="theme-icon">☀️</span> <span id="theme-text">Світла</span>
+      <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">
+        <span class="theme-icon-box" id="theme-icon">☀️</span>
+        <span id="theme-text">Світла</span>
       </button>
     </div>
   </div>
@@ -977,14 +995,13 @@
 </div>
 
 <div id="toast" class="toast-notification">
-  <span class="toast-icon">
-    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <span class="toast-icon" id="toast-icon">
+    <svg viewBox="0 0 24 24" id="toast-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
   </span>
   <span id="toast-text">ID скопійовано</span>
 </div>
 
 <script>
-  // 🔊 Web Audio API (генерація iOS-стилю без сторонніх файлів)
   let audioCtx = null;
   let isSoundEnabled = true;
 
@@ -997,30 +1014,39 @@
     }
   }
 
-  // 1. М'який глухий клік (тумблер / перемикання теми)
-  function playToggleSound() {
+  // 1. М'який плавний перелив при зміні теми (iOS ambient morph)
+  function playThemeSound(toDark) {
     if (!isSoundEnabled) return;
     try {
       initAudioContext();
+      const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.045);
+      if (toDark) {
+        // Опускання в тихий глибокий темний тон
+        osc.frequency.setValueAtTime(480, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.14);
+      } else {
+        // М'який підйом у світлий тон
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.14);
+      }
 
-      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.045);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.05, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
 
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.045);
+      osc.start(now);
+      osc.stop(now + 0.14);
     } catch (e) {}
   }
 
-  // 2. Дзвінкий м'який поп успішної дії (поділитися парою / скопійовано)
+  // 2. Дзвінкий м'який поп (копіювання / поділитися)
   function playPopSuccessSound() {
     if (!isSoundEnabled) return;
     try {
@@ -1033,7 +1059,7 @@
       osc.frequency.setValueAtTime(540, now);
       osc.frequency.exponentialRampToValueAtTime(880, now + 0.07);
 
-      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.setValueAtTime(0.07, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
 
       osc.connect(gain);
@@ -1057,7 +1083,7 @@
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now + i * 0.06);
 
-        gain.gain.setValueAtTime(0.06, now + i * 0.06);
+        gain.gain.setValueAtTime(0.05, now + i * 0.06);
         gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.09);
 
         osc.connect(gain);
@@ -1069,7 +1095,6 @@
     } catch (e) {}
   }
 
-  // Перемикання звуку (збереження в пам'ять)
   function initSoundState() {
     const savedSound = localStorage.getItem('pr14-sound');
     if (savedSound === 'muted') {
@@ -1088,9 +1113,9 @@
     
     if (isSoundEnabled) {
       playChimeSound();
-      showToast('Звук увімкнено');
+      showToast('Звук увімкнено', 'check');
     } else {
-      showToast('Звук вимкнено');
+      showToast('Звук вимкнено', 'cross');
     }
   }
 
@@ -1123,9 +1148,15 @@
   }
 
   function toggleTheme() {
-    playToggleSound();
+    const btn = document.getElementById('theme-btn');
+    btn.classList.add('animating');
+    setTimeout(() => btn.classList.remove('animating'), 450);
+
     const isLight = document.body.classList.toggle('light-mode');
     localStorage.setItem('pr14-theme', isLight ? 'light' : 'dark');
+
+    playThemeSound(!isLight);
+
     document.getElementById('theme-icon').textContent = isLight ? '🌙' : '☀️';
     document.getElementById('theme-text').textContent = isLight ? 'Темна' : 'Світла';
   }
@@ -1150,13 +1181,25 @@
   }
 
   const checkIconSvg = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+  const crossIconSvg = `<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
   const copyIconSvg = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
 
   let toastTimeout;
-  function showToast(msg) {
+  function showToast(msg, iconType = 'check') {
     const toast = document.getElementById('toast');
     const toastText = document.getElementById('toast-text');
+    const toastIcon = document.getElementById('toast-icon');
+    
     toastText.textContent = msg;
+
+    if (iconType === 'cross') {
+      toastIcon.classList.add('cross-icon');
+      toastIcon.innerHTML = crossIconSvg;
+    } else {
+      toastIcon.classList.remove('cross-icon');
+      toastIcon.innerHTML = checkIconSvg;
+    }
+
     toast.classList.add('show');
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
@@ -1187,7 +1230,7 @@
           btn.classList.remove('copied');
         }, 1500);
       }
-      showToast(`${type} скопійовано`);
+      showToast(`${type} скопійовано`, 'check');
     }
 
     if (navigator.clipboard && window.isSecureContext) {
@@ -1254,7 +1297,6 @@
     const targetTab = document.querySelector(`.tab-btn[data-day="${targetDayNumber}"]`) || document.querySelector('.tab-btn[data-day="1"]');
     switchDay(activeDayCode, targetTab);
 
-    // Підсвічування пари: пульсуючий червоний кружечок
     document.querySelectorAll('.classes-table tr').forEach(row => {
       row.classList.remove('current-pair');
       const existingBadge = row.querySelector('.live-dot-wrap');
@@ -1302,7 +1344,7 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `
-        const CACHE_NAME = 'pr14-v5';
+        const CACHE_NAME = 'pr14-v6';
         self.addEventListener('install', e => self.skipWaiting());
         self.addEventListener('activate', e => e.waitUntil(clients.claim()));
         self.addEventListener('fetch', e => {
