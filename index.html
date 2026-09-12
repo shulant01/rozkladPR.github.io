@@ -27,20 +27,21 @@
       --card-base-bg: #1e293b;
       --card-even-row: #273549;
       
-      --grey-header: #334155;
-      /* М'який приглушений бордово-винний */
-      --red-header: #5c1d2c;
+      /* Єдиний акцентний сірий для всіх днів */
+      --header-bg: #3b4d66;
       
       --row-text: #f1f5f9;
       --row-text-sub: #94a3b8;
-      --aud-badge-bg: rgba(225, 29, 72, 0.15);
-      --aud-badge-color: #fda4af;
+      
+      /* Аудиторії: тьмяно-синій відтінок посилання */
+      --aud-badge-bg: rgba(56, 132, 255, 0.14);
+      --aud-badge-color: #70a6ff;
       
       --zoom-box-bg: #1e293b;
       --zoom-cell-bg: #0f172a;
       
-      --active-row-border: #f43f5e;
-      --active-row-bg: rgba(244, 63, 94, 0.08);
+      --active-row-border: #ef4444;
+      --active-row-bg: rgba(239, 68, 68, 0.08);
 
       --toast-bg: rgba(30, 41, 59, 0.95);
       --toast-border: #475569;
@@ -59,14 +60,15 @@
       --card-base-bg: #f1f5f9;
       --card-even-row: #e2e8f0;
       
-      --grey-header: #55657e;
-      /* Стриманий теплий червоно-бордовий для світлої теми */
-      --red-header: #9f1239;
+      /* Єдиний акцентний графітовий сірий для всіх днів */
+      --header-bg: #475569;
       
       --row-text: #1e293b;
       --row-text-sub: #475569;
-      --aud-badge-bg: rgba(159, 18, 57, 0.1);
-      --aud-badge-color: #9f1239;
+      
+      /* Аудиторії: приглушений синій колір */
+      --aud-badge-bg: rgba(37, 99, 235, 0.1);
+      --aud-badge-color: #2563eb;
       
       --zoom-box-bg: #ffffff;
       --zoom-cell-bg: #f8fafc;
@@ -91,7 +93,6 @@
       transition: background-color 0.25s, color 0.25s;
     }
 
-    /* На ПК — строго на всю доступну ширину */
     .schedule-container {
       width: 100%;
       padding: 16px 22px;
@@ -152,7 +153,6 @@
       gap: 8px;
     }
 
-    /* Офлайн індикатор */
     .offline-badge {
       display: none;
       align-items: center;
@@ -234,6 +234,7 @@
       border: 1px solid var(--card-border);
     }
 
+    /* Однаковий колір заголовків онлайн та офлайн днів */
     .day-header {
       padding: 10px 14px;
       font-weight: 800;
@@ -244,6 +245,7 @@
       justify-content: space-between;
       align-items: center;
       color: #ffffff;
+      background-color: var(--header-bg);
     }
 
     .day-header .tag {
@@ -251,12 +253,9 @@
       font-weight: 700;
       padding: 2px 7px;
       border-radius: 4px;
-      background-color: rgba(0,0,0,0.25);
+      background-color: rgba(0,0,0,0.28);
       color: #ffffff;
     }
-
-    .header-grey { background-color: var(--grey-header); }
-    .header-red { background-color: var(--red-header); }
 
     .classes-table {
       width: 100%;
@@ -288,21 +287,35 @@
       box-shadow: inset 4px 0 0 0 var(--active-row-border);
     }
 
-    .now-pill {
-      display: inline-block;
-      background-color: #e11d48;
-      color: #ffffff;
-      font-size: 9.5px;
-      font-weight: 800;
-      padding: 1px 5px;
+    /* 🔴 Пульсуючий бейдж REC як на ефірах */
+    .rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #ef4444;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 1px 4px;
       border-radius: 3px;
       margin-bottom: 2px;
-      animation: pulse 1.8s infinite;
+      line-height: 1;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+    .rec-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      display: inline-block;
+      animation: live-blink 1.2s infinite ease-in-out;
+    }
+
+    @keyframes live-blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(0.75); }
     }
 
     .num-col {
@@ -356,7 +369,7 @@
 
     .aud-badge {
       display: inline-block;
-      font-weight: 800;
+      font-weight: 700;
       padding: 1px 6px;
       border-radius: 4px;
       background: var(--aud-badge-bg);
@@ -438,7 +451,6 @@
       margin-top: 2px;
     }
 
-    /* Панель під Zoom на ПК */
     .desktop-footer-bar {
       display: flex;
       justify-content: space-between;
@@ -464,7 +476,6 @@
     .share-pair-btn:hover { background-color: var(--btn-share-hover); }
     .share-pair-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.2px; fill: none; }
 
-    /* Мобільний блок кнопки поділитися */
     .mobile-share-card {
       display: none;
       margin-top: 12px;
@@ -520,7 +531,7 @@
 
     .toast-icon svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 3px; fill: none; }
 
-    /* 📱 МОБІЛЬНИЙ РЕЖИМ 9:16 (< 768px) */
+    /* 📱 МОБІЛЬНИЙ РЕЖИМ (< 768px) */
     @media (max-width: 767px) {
       .schedule-container {
         padding: 10px 10px;
@@ -591,7 +602,7 @@
 
       #zoom-section {
         display: none;
-        min-height: calc(100vh - 165px);
+        min-height: calc(100vh - 110px);
         border-radius: 12px;
         margin-top: 0;
       }
@@ -651,7 +662,7 @@
 
         <!-- ПОНЕДІЛОК -->
         <div id="day-mon" class="day-card" data-day="1">
-          <div class="day-header header-grey">
+          <div class="day-header">
             <span>Понеділок</span>
             <span class="tag">Дистанційно</span>
           </div>
@@ -679,7 +690,7 @@
 
         <!-- ВІВТОРОК -->
         <div id="day-tue" class="day-card" data-day="2">
-          <div class="day-header header-red">
+          <div class="day-header">
             <span>Вівторок</span>
             <span class="tag">Офлайн</span>
           </div>
@@ -729,7 +740,7 @@
 
         <!-- СЕРЕДА -->
         <div id="day-wed" class="day-card" data-day="3">
-          <div class="day-header header-red">
+          <div class="day-header">
             <span>Середа</span>
             <span class="tag">Офлайн</span>
           </div>
@@ -757,7 +768,7 @@
 
         <!-- ЧЕТВЕР -->
         <div id="day-thu" class="day-card" data-day="4">
-          <div class="day-header header-red">
+          <div class="day-header">
             <span>Четвер</span>
             <span class="tag">Офлайн</span>
           </div>
@@ -785,7 +796,7 @@
 
         <!-- П'ЯТНИЦЯ -->
         <div id="day-fri" class="day-card" data-day="5">
-          <div class="day-header header-red">
+          <div class="day-header">
             <span>П'ятниця</span>
             <span class="tag">Офлайн</span>
           </div>
@@ -824,8 +835,8 @@
     </tr>
   </table>
 
-  <!-- Кнопка "Поділитися парою" для мобільної версії (окремий блок під днем) -->
-  <div class="mobile-share-card">
+  <!-- Мобільна кнопка "Поділитися парою" (ховається у вкладці Zoom) -->
+  <div class="mobile-share-card" id="mobile-share-container">
     <button class="share-pair-btn" onclick="shareCurrentPair()">
       <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
       <span>Поділитися парою</span>
@@ -927,7 +938,6 @@
     </table>
   </div>
 
-  <!-- Футер для ПК: кнопка "Поділитися парою" зліва, копірайт справа -->
   <div class="desktop-footer-bar">
     <button class="share-pair-btn" onclick="shareCurrentPair()">
       <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
@@ -945,7 +955,6 @@
 </div>
 
 <script>
-  // 📅 Дата
   function updateLiveDate() {
     const now = new Date();
     const days = ['неділя', 'понеділок', 'вівторок', 'середа', 'четвер', "п'ятниця", 'субота'];
@@ -961,7 +970,6 @@
     }
   }
 
-  // 🌙 Тема
   function initTheme() {
     const savedTheme = localStorage.getItem('pr14-theme');
     if (savedTheme === 'light') {
@@ -989,11 +997,15 @@
 
     document.querySelectorAll('.day-card, #zoom-section').forEach(el => el.classList.remove('active-day'));
 
+    const mobileShare = document.getElementById('mobile-share-container');
+
     if (dayId === 'zoom') {
       document.getElementById('zoom-section').classList.add('active-day');
+      if (mobileShare) mobileShare.style.display = 'none';
     } else {
       const target = document.getElementById('day-' + dayId);
       if (target) target.classList.add('active-day');
+      if (mobileShare) mobileShare.style.display = 'block';
     }
   }
 
@@ -1048,7 +1060,6 @@
     }
   }
 
-  // 🚀 Генератор тексту "Поділитися парою"
   function shareCurrentPair() {
     const activePairRow = document.querySelector('.classes-table tr.current-pair');
     let shareText = "";
@@ -1063,7 +1074,6 @@
 
       shareText = `Поточна пара: ${subj} • ${teacher}${aud}\nZoom: ${link}\nID: ${id} | Код: ${pwd}`;
     } else {
-      // Якщо пари зараз немає — шукаємо найближчу наступну або розклад дня
       const activeCard = document.querySelector('.day-card.active-day') || document.querySelector('#day-mon');
       const firstRow = activeCard ? activeCard.querySelector('.classes-table tr') : null;
       if (firstRow) {
@@ -1082,23 +1092,17 @@
     copyText(shareText, null, "Інформацію про пару");
   }
 
-  // ⏰ Автовибір дня (з логікою після 18:30) + Підсвічування пари
   function updateScheduleState() {
     updateLiveDate();
     const now = new Date();
-    const currentDay = now.getDay(); // 0 - Нд, 1 - Пн ... 5 - Пт, 6 - Сб
+    const currentDay = now.getDay();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    const isAfterEvening = currentMinutes >= (18 * 60 + 30); // після 18:30
+    const isAfterEvening = currentMinutes >= (18 * 60 + 30);
 
-    // Логіка визначення дня для показу
     let targetDayNumber = currentDay;
-
     if (isAfterEvening) {
-      // Якщо після 18:30 — показуємо завтра
       targetDayNumber = (currentDay + 1) % 7;
     }
-
-    // Якщо вихідний (субота або неділя) — відкриваємо понеділок (1)
     if (targetDayNumber === 0 || targetDayNumber === 6) {
       targetDayNumber = 1;
     }
@@ -1109,10 +1113,10 @@
     const targetTab = document.querySelector(`.tab-btn[data-day="${targetDayNumber}"]`) || document.querySelector('.tab-btn[data-day="1"]');
     switchDay(activeDayCode, targetTab);
 
-    // Підсвічування пари "Зараз" (виключно у фактичний день і час)
+    // Підсвічування пари: значок REC
     document.querySelectorAll('.classes-table tr').forEach(row => {
       row.classList.remove('current-pair');
-      const existingBadge = row.querySelector('.now-pill');
+      const existingBadge = row.querySelector('.rec-badge');
       if (existingBadge) existingBadge.remove();
 
       const dayCard = row.closest('.day-card');
@@ -1131,10 +1135,10 @@
             row.classList.add('current-pair');
             const numCell = row.querySelector('.num-col');
             if (numCell) {
-              const pill = document.createElement('div');
-              pill.className = 'now-pill';
-              pill.textContent = 'ЗАРАЗ';
-              numCell.prepend(pill);
+              const badge = document.createElement('div');
+              badge.className = 'rec-badge';
+              badge.innerHTML = `<span class="rec-dot"></span>REC`;
+              numCell.prepend(badge);
             }
           }
         }
@@ -1142,7 +1146,6 @@
     });
   }
 
-  // ⚡ Офлайн індикатор мережі
   function updateOnlineStatus() {
     const indicator = document.getElementById('offline-indicator');
     if (!navigator.onLine) {
@@ -1154,17 +1157,12 @@
   window.addEventListener('online', updateOnlineStatus);
   window.addEventListener('offline', updateOnlineStatus);
 
-  // 📦 Простий вбудований Service Worker (через Blob URL) для 100% кешування офлайн
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `
-        const CACHE_NAME = 'pr14-v1';
-        self.addEventListener('install', e => {
-          self.skipWaiting();
-        });
-        self.addEventListener('activate', e => {
-          e.waitUntil(clients.claim());
-        });
+        const CACHE_NAME = 'pr14-v2';
+        self.addEventListener('install', e => self.skipWaiting());
+        self.addEventListener('activate', e => e.waitUntil(clients.claim()));
         self.addEventListener('fetch', e => {
           e.respondWith(
             fetch(e.request).then(resp => {
@@ -1183,7 +1181,14 @@
   initTheme();
   updateScheduleState();
   updateOnlineStatus();
+
+  // Оновлення стану кожну хвилину
   setInterval(updateScheduleState, 60000);
+
+  // 🔄 Автоперезавантаження сторінки кожні 4 хвилини
+  setInterval(() => {
+    location.reload();
+  }, 4 * 60 * 1000);
 </script>
 </body>
 </html>
