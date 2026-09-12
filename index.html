@@ -27,13 +27,15 @@
       --card-base-bg: #1e293b;
       --card-even-row: #273549;
       
-      /* Єдиний акцентний сірий для всіх днів */
-      --header-bg: #3b4d66;
+      /* Напівпрозорий приємний червоний для темної теми */
+      --header-bg: rgba(225, 29, 72, 0.22);
+      --header-text: #fecdd3;
+      --header-tag-bg: rgba(0, 0, 0, 0.35);
+      --header-tag-text: #ffe4e6;
       
       --row-text: #f1f5f9;
       --row-text-sub: #94a3b8;
       
-      /* Аудиторії: тьмяно-синій відтінок посилання */
       --aud-badge-bg: rgba(56, 132, 255, 0.14);
       --aud-badge-color: #70a6ff;
       
@@ -60,13 +62,15 @@
       --card-base-bg: #f1f5f9;
       --card-even-row: #e2e8f0;
       
-      /* Єдиний акцентний графітовий сірий для всіх днів */
-      --header-bg: #475569;
+      /* Напівпрозорий делікатний рожево-червоний для світлої теми */
+      --header-bg: rgba(225, 29, 72, 0.09);
+      --header-text: #9f1239;
+      --header-tag-bg: rgba(159, 18, 57, 0.12);
+      --header-tag-text: #9f1239;
       
       --row-text: #1e293b;
       --row-text-sub: #475569;
       
-      /* Аудиторії: приглушений синій колір */
       --aud-badge-bg: rgba(37, 99, 235, 0.1);
       --aud-badge-color: #2563eb;
       
@@ -234,7 +238,7 @@
       border: 1px solid var(--card-border);
     }
 
-    /* Однаковий колір заголовків онлайн та офлайн днів */
+    /* Напівпрозорий заголовок для всіх днів */
     .day-header {
       padding: 10px 14px;
       font-weight: 800;
@@ -244,8 +248,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #ffffff;
+      color: var(--header-text);
       background-color: var(--header-bg);
+      border-bottom: 1px solid rgba(225, 29, 72, 0.15);
     }
 
     .day-header .tag {
@@ -253,8 +258,8 @@
       font-weight: 700;
       padding: 2px 7px;
       border-radius: 4px;
-      background-color: rgba(0,0,0,0.28);
-      color: #ffffff;
+      background-color: var(--header-tag-bg);
+      color: var(--header-tag-text);
     }
 
     .classes-table {
@@ -287,35 +292,38 @@
       box-shadow: inset 4px 0 0 0 var(--active-row-border);
     }
 
-    /* 🔴 Пульсуючий бейдж REC як на ефірах */
-    .rec-badge {
+    /* 🔴 Пульсуючий живий кружечок для поточної пари */
+    .live-dot-wrap {
       display: inline-flex;
+      position: relative;
+      width: 10px;
+      height: 10px;
+      margin-bottom: 3px;
       align-items: center;
-      gap: 3px;
-      background-color: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.5);
-      color: #ef4444;
-      font-size: 9px;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-bottom: 2px;
-      line-height: 1;
+      justify-content: center;
     }
 
-    .rec-dot {
-      width: 5px;
-      height: 5px;
-      background-color: #ef4444;
+    .live-pulse {
+      position: absolute;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      display: inline-block;
-      animation: live-blink 1.2s infinite ease-in-out;
+      background-color: rgba(239, 68, 68, 0.5);
+      animation: dot-ripple 1.6s infinite cubic-bezier(0, 0.2, 0.8, 1);
     }
 
-    @keyframes live-blink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.25; transform: scale(0.75); }
+    .live-dot {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    @keyframes dot-ripple {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
     }
 
     .num-col {
@@ -835,7 +843,7 @@
     </tr>
   </table>
 
-  <!-- Мобільна кнопка "Поділитися парою" (ховається у вкладці Zoom) -->
+  <!-- Мобільна кнопка "Поділитися парою" -->
   <div class="mobile-share-card" id="mobile-share-container">
     <button class="share-pair-btn" onclick="shareCurrentPair()">
       <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
@@ -943,7 +951,7 @@
       <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
       <span>Поділитися поточною парою</span>
     </button>
-    <div class="powered-by">powered by Антон x Gemini</div>
+    <div class="powered-by">powered by Антон x Gemini • Оновлено 12.09.26</div>
   </div>
 </div>
 
@@ -1113,10 +1121,10 @@
     const targetTab = document.querySelector(`.tab-btn[data-day="${targetDayNumber}"]`) || document.querySelector('.tab-btn[data-day="1"]');
     switchDay(activeDayCode, targetTab);
 
-    // Підсвічування пари: значок REC
+    // Підсвічування пари: чистий пульсуючий червоний кружечок
     document.querySelectorAll('.classes-table tr').forEach(row => {
       row.classList.remove('current-pair');
-      const existingBadge = row.querySelector('.rec-badge');
+      const existingBadge = row.querySelector('.live-dot-wrap');
       if (existingBadge) existingBadge.remove();
 
       const dayCard = row.closest('.day-card');
@@ -1135,10 +1143,11 @@
             row.classList.add('current-pair');
             const numCell = row.querySelector('.num-col');
             if (numCell) {
-              const badge = document.createElement('div');
-              badge.className = 'rec-badge';
-              badge.innerHTML = `<span class="rec-dot"></span>REC`;
-              numCell.prepend(badge);
+              const liveDot = document.createElement('div');
+              liveDot.className = 'live-dot-wrap';
+              liveDot.title = 'Зараз іде пара';
+              liveDot.innerHTML = `<span class="live-pulse"></span><span class="live-dot"></span>`;
+              numCell.prepend(liveDot);
             }
           }
         }
@@ -1160,7 +1169,7 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `
-        const CACHE_NAME = 'pr14-v2';
+        const CACHE_NAME = 'pr14-v3';
         self.addEventListener('install', e => self.skipWaiting());
         self.addEventListener('activate', e => e.waitUntil(clients.claim()));
         self.addEventListener('fetch', e => {
@@ -1182,10 +1191,9 @@
   updateScheduleState();
   updateOnlineStatus();
 
-  // Оновлення стану кожну хвилину
   setInterval(updateScheduleState, 60000);
 
-  // 🔄 Автоперезавантаження сторінки кожні 4 хвилини
+  // 🔄 Автоперезавантаження кожні 4 хвилини
   setInterval(() => {
     location.reload();
   }, 4 * 60 * 1000);
