@@ -1,0 +1,989 @@
+<!-- Іконка для вкладки браузера (Favicon) та для Apple пристроїв -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23e11d48'/><text x='50%' y='54%' dominant-baseline='central' text-anchor='middle' fill='%23ffffff' font-family='Arial, sans-serif' font-weight='900' font-size='44'>ПР</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23e11d48'/><text x='50%' y='54%' dominant-baseline='central' text-anchor='middle' fill='%23ffffff' font-family='Arial, sans-serif' font-weight='900' font-size='44'>ПР</text></svg>">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  
+  :root {
+    --bg-page: #0f172a;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --card-border: #334155;
+    
+    --card-base-bg: #1e293b;
+    --card-even-row: #273549;
+    
+    --grey-header: #334155;
+    --green-header: #1e3a34;
+    
+    --row-text: #f1f5f9;
+    --row-text-sub: #94a3b8;
+    --aud-badge-bg: rgba(52, 211, 153, 0.12);
+    --aud-badge-color: #6ee7b7;
+    
+    --zoom-box-bg: #1e293b;
+    --zoom-cell-bg: #0f172a;
+    
+    --active-row-border: #f43f5e;
+    --active-row-bg: rgba(244, 63, 94, 0.08);
+
+    --toast-bg: rgba(30, 41, 59, 0.95);
+    --toast-border: #475569;
+    --toast-text: #f8fafc;
+  }
+
+  body.light-mode {
+    --bg-page: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --card-border: #e2e8f0;
+    
+    --card-base-bg: #f1f5f9;
+    --card-even-row: #e2e8f0;
+    
+    --grey-header: #55657e;
+    --green-header: #375f53;
+    
+    --row-text: #1e293b;
+    --row-text-sub: #475569;
+    --aud-badge-bg: rgba(55, 95, 83, 0.12);
+    --aud-badge-color: #23453c;
+    
+    --zoom-box-bg: #ffffff;
+    --zoom-cell-bg: #f8fafc;
+
+    --toast-bg: rgba(15, 23, 42, 0.92);
+    --toast-border: #334155;
+    --toast-text: #ffffff;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: var(--bg-page);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-main);
+    transition: background-color 0.25s, color 0.25s;
+  }
+
+  .schedule-container {
+    width: 100%;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .brand-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    background-color: #e11d48;
+    color: #ffffff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .brand-text-block {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .brand-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+
+  .current-date-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-muted);
+    opacity: 0.85;
+  }
+
+  .theme-toggle-btn {
+    background-color: var(--card-border);
+    border: none;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text-main);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .day-tabs {
+    display: none;
+    gap: 5px;
+    margin-bottom: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-page);
+    padding: 4px 0;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 9px 3px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--card-border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .tab-btn.active {
+    background-color: #e11d48;
+    color: #ffffff;
+  }
+
+  .diary-layout {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 16px 0;
+    table-layout: fixed;
+  }
+
+  .diary-col {
+    width: 50%;
+    vertical-align: top;
+    padding: 0;
+  }
+
+  .day-card {
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    background-color: var(--card-base-bg);
+    border: 1px solid var(--card-border);
+  }
+
+  .day-header {
+    padding: 10px 14px;
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+  }
+
+  .day-header .tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background-color: rgba(0,0,0,0.25);
+    color: #ffffff;
+  }
+
+  .header-grey { background-color: var(--grey-header); }
+  .header-green { background-color: var(--green-header); }
+
+  .classes-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .classes-table tr {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s;
+  }
+
+  body.light-mode .classes-table tr {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .classes-table tr:nth-child(even) {
+    background-color: var(--card-even-row);
+  }
+
+  .classes-table td {
+    padding: 11px 12px;
+    vertical-align: middle;
+  }
+
+  .classes-table tr.current-pair {
+    background-color: var(--active-row-bg) !important;
+    position: relative;
+    box-shadow: inset 4px 0 0 0 var(--active-row-border);
+  }
+
+  .now-pill {
+    display: inline-block;
+    background-color: #e11d48;
+    color: #ffffff;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-bottom: 2px;
+    animation: pulse 1.8s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .num-col {
+    width: 34px;
+    font-size: 17px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--row-text);
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .time-col {
+    width: 64px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 6px;
+    color: var(--row-text-sub);
+  }
+
+  .subject-col {
+    padding-left: 6px;
+    padding-right: 10px;
+  }
+
+  .subject-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--row-text);
+    line-height: 1.25;
+  }
+
+  .subject-info {
+    font-size: 12.5px;
+    color: var(--row-text-sub);
+    margin-top: 2px;
+  }
+
+  .dates-col {
+    width: 175px;
+    font-size: 11px;
+    text-align: right;
+    color: var(--row-text-sub);
+    font-weight: 600;
+    line-height: 1.25;
+    padding-right: 12px;
+  }
+
+  .aud-badge {
+    display: inline-block;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--aud-badge-bg);
+    color: var(--aud-badge-color);
+  }
+
+  .zoom-box-full {
+    background-color: var(--zoom-box-bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 4px;
+    border: 1px solid var(--card-border);
+  }
+
+  .zoom-title-full {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 5px;
+  }
+
+  .zoom-grid-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 8px;
+    table-layout: fixed;
+  }
+
+  .zoom-cell {
+    width: 33.33%;
+    background-color: var(--zoom-cell-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    vertical-align: top;
+  }
+
+  .zoom-teacher { font-weight: 800; font-size: 12.5px; color: var(--text-main); margin-bottom: 4px; }
+  .zoom-action { color: #3b82f6; font-weight: 700; font-size: 12px; text-decoration: underline; display: inline-block; margin-bottom: 3px; }
+  
+  .copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 3px 4px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: background-color 0.15s, color 0.15s;
+    vertical-align: middle;
+  }
+  .copy-btn:hover {
+    background-color: var(--card-border);
+    color: var(--text-main);
+  }
+  .copy-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.4px;
+    fill: none;
+    stroke: currentColor;
+  }
+  .copy-btn.copied {
+    color: #10b981 !important;
+  }
+  
+  .zoom-creds {
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3px;
+    margin-top: 2px;
+  }
+
+  .powered-by {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+    opacity: 0.7;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  /* 🔔 Спливаюче сповіщення (Toast) */
+  .toast-notification {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(30px);
+    background-color: var(--toast-bg);
+    color: var(--toast-text);
+    border: 1px solid var(--toast-border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 12.5px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 99999;
+  }
+
+  .toast-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background-color: #10b981;
+    color: #ffffff;
+    border-radius: 50%;
+  }
+
+  .toast-icon svg {
+    width: 10px;
+    height: 10px;
+    stroke: currentColor;
+    stroke-width: 3px;
+    fill: none;
+  }
+
+  @media (max-width: 767px) {
+    .schedule-container { padding: 8px 6px; }
+    .day-tabs { display: flex; }
+
+    .diary-layout, .diary-layout > tbody, .diary-layout > tbody > tr, .diary-col {
+      display: block;
+      width: 100% !important;
+    }
+
+    .day-card {
+      display: none;
+      min-height: calc(100vh - 100px);
+      margin-bottom: 0;
+      border-radius: 12px;
+    }
+
+    .day-card.active-day {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .day-header { padding: 14px 16px; font-size: 16px; }
+    .classes-table { flex: 1; height: 100%; }
+
+    .classes-table tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 14px 12px;
+    }
+
+    .num-col { width: 30px; font-size: 18px; text-align: left; }
+    .time-col { width: 62px; font-size: 12.5px; text-align: left; }
+    .subject-col { flex: 1 1 calc(100% - 98px); padding: 0; }
+    .subject-name { font-size: 14.5px; }
+    .subject-info { font-size: 12.5px; }
+
+    .dates-col {
+      width: 100%;
+      text-align: left;
+      font-size: 11.5px;
+      padding-top: 6px;
+      padding-left: 92px;
+      opacity: 0.9;
+    }
+
+    #zoom-section {
+      display: none;
+      min-height: calc(100vh - 100px);
+      border-radius: 12px;
+      margin-top: 0;
+    }
+    #zoom-section.active-day { display: block; }
+
+    .zoom-grid-table, .zoom-grid-table > tbody, .zoom-grid-table tr, .zoom-cell {
+      display: block;
+      width: 100% !important;
+    }
+    .zoom-cell { margin-bottom: 8px; padding: 12px; }
+    .zoom-teacher { font-size: 13.5px; }
+    .zoom-action { font-size: 13px; }
+    .zoom-creds { font-size: 11.5px; }
+
+    .toast-notification {
+      bottom: 18px;
+      font-size: 12px;
+      padding: 7px 16px;
+    }
+  }
+</style>
+
+<div class="schedule-container">
+  <div class="top-bar">
+    <div class="brand-badge">
+      <div class="brand-icon">ПР</div>
+      <div class="brand-text-block">
+        <span class="brand-title">Розклад ПР-14</span>
+        <span class="current-date-text" id="live-date">завантаження...</span>
+      </div>
+    </div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()">
+      <span id="theme-icon">☀️</span> <span id="theme-text">Світла</span>
+    </button>
+  </div>
+
+  <div class="day-tabs">
+    <button class="tab-btn" data-day="1" onclick="switchDay('mon', this)">ПН</button>
+    <button class="tab-btn" data-day="2" onclick="switchDay('tue', this)">ВТ</button>
+    <button class="tab-btn" data-day="3" onclick="switchDay('wed', this)">СР</button>
+    <button class="tab-btn" data-day="4" onclick="switchDay('thu', this)">ЧТ</button>
+    <button class="tab-btn" data-day="5" onclick="switchDay('fri', this)">ПТ</button>
+    <button class="tab-btn" onclick="switchDay('zoom', this)">Zoom</button>
+  </div>
+
+  <table class="diary-layout">
+    <tr>
+      <td class="diary-col">
+
+        <!-- ПОНЕДІЛОК -->
+        <div id="day-mon" class="day-card" data-day="1">
+          <div class="day-header header-grey">
+            <span>Понеділок</span>
+            <span class="tag">Дистанційно</span>
+          </div>
+          <table class="classes-table">
+            <tr data-start="10:40" data-end="12:00">
+              <td class="num-col">2</td>
+              <td class="time-col">10:40<br>12:00</td>
+              <td class="subject-col">
+                <div class="subject-name">Основи трудового права та підприємницької діяльності</div>
+                <div class="subject-info">Лекція • доц. Заічко О.В.</div>
+              </td>
+              <td class="dates-col">07.09, 14.09, 21.09,<br>05.10, 19.10, 02.11</td>
+            </tr>
+            <tr data-start="12:30" data-end="13:50">
+              <td class="num-col">3</td>
+              <td class="time-col">12:30<br>13:50</td>
+              <td class="subject-col">
+                <div class="subject-name">Основи трудового права та підприємницької діяльності</div>
+                <div class="subject-info">Лекція • доц. Заічко О.В.</div>
+              </td>
+              <td class="dates-col">Щотижня з 07.09 по 02.11</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- ВІВТОРОК -->
+        <div id="day-tue" class="day-card" data-day="2">
+          <div class="day-header header-green">
+            <span>Вівторок</span>
+            <span class="tag">Офлайн</span>
+          </div>
+          <table class="classes-table">
+            <tr data-start="12:30" data-end="13:50">
+              <td class="num-col">3</td>
+              <td class="time-col">12:30<br>13:50</td>
+              <td class="subject-col">
+                <div class="subject-name">Практика рекламної та PR діяльності</div>
+                <div class="subject-info">Лекція • доц. Пашкевич М.Ю. • <span class="aud-badge">ауд. 504</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 01.09 по 03.11</td>
+            </tr>
+            <tr data-start="14:10" data-end="15:30">
+              <td class="num-col">4</td>
+              <td class="time-col">14:10<br>15:30</td>
+              <td class="subject-col">
+                <div class="subject-name">Практика рекламної та PR діяльності</div>
+                <div class="subject-info">Практика • доц. Пашкевич М.Ю. • <span class="aud-badge">ауд. 504</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 01.09 по 03.11</td>
+            </tr>
+            <tr data-start="15:40" data-end="17:00">
+              <td class="num-col">5</td>
+              <td class="time-col">15:40<br>17:00</td>
+              <td class="subject-col">
+                <div class="subject-name">Політичні комунікації та PR</div>
+                <div class="subject-info">Лекція • проф. Кочубей Л.О. • <span class="aud-badge">ауд. 504</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 08.09 по 03.11</td>
+            </tr>
+            <tr data-start="17:10" data-end="18:30">
+              <td class="num-col">6</td>
+              <td class="time-col">17:10<br>18:30</td>
+              <td class="subject-col">
+                <div class="subject-name">Політичні комунікації та PR</div>
+                <div class="subject-info">Лекція / Практика • проф. Кочубей Л.О. • <span class="aud-badge">ауд. 504</span></div>
+              </td>
+              <td class="dates-col"><b>Лек:</b> 08.09<br><b>Пр:</b> щотижня з 15.09 по 03.11</td>
+            </tr>
+          </table>
+        </div>
+
+      </td>
+
+      <td class="diary-col">
+
+        <!-- СЕРЕДА -->
+        <div id="day-wed" class="day-card" data-day="3">
+          <div class="day-header header-green">
+            <span>Середа</span>
+            <span class="tag">Офлайн</span>
+          </div>
+          <table class="classes-table">
+            <tr data-start="10:40" data-end="12:00">
+              <td class="num-col">2</td>
+              <td class="time-col">10:40<br>12:00</td>
+              <td class="subject-col">
+                <div class="subject-name">PR в соціальних мережах та месенджерах</div>
+                <div class="subject-info">Лекція • доц. Парфенюк І.М. • <span class="aud-badge">ауд. 510</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 02.09 по 04.11</td>
+            </tr>
+            <tr data-start="12:30" data-end="13:50">
+              <td class="num-col">3</td>
+              <td class="time-col">12:30<br>13:50</td>
+              <td class="subject-col">
+                <div class="subject-name">PR в соціальних мережах та месенджерах</div>
+                <div class="subject-info">Практика • доц. Парфенюк І.М. • <span class="aud-badge">ауд. 510</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 02.09 по 04.11</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- ЧЕТВЕР -->
+        <div id="day-thu" class="day-card" data-day="4">
+          <div class="day-header header-green">
+            <span>Четвер</span>
+            <span class="tag">Офлайн</span>
+          </div>
+          <table class="classes-table">
+            <tr data-start="12:30" data-end="13:50">
+              <td class="num-col">3</td>
+              <td class="time-col">12:30<br>13:50</td>
+              <td class="subject-col">
+                <div class="subject-name">Іміджологія</div>
+                <div class="subject-info">Лекція • доц. Рибаченко В.Ф. • <span class="aud-badge">ауд. 203</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 03.09 по 05.11</td>
+            </tr>
+            <tr data-start="14:10" data-end="15:30">
+              <td class="num-col">4</td>
+              <td class="time-col">14:10<br>15:30</td>
+              <td class="subject-col">
+                <div class="subject-name">Іміджологія</div>
+                <div class="subject-info">Практика • доц. Рибаченко В.Ф. • <span class="aud-badge">ауд. 203</span></div>
+              </td>
+              <td class="dates-col">Щотижня з 03.09 по 05.11</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- П'ЯТНИЦЯ -->
+        <div id="day-fri" class="day-card" data-day="5">
+          <div class="day-header header-green">
+            <span>П'ятниця</span>
+            <span class="tag">Офлайн</span>
+          </div>
+          <table class="classes-table">
+            <tr data-start="10:40" data-end="12:00">
+              <td class="num-col">2</td>
+              <td class="time-col">10:40<br>12:00</td>
+              <td class="subject-col">
+                <div class="subject-name">Веб-дизайн та мультимедійні технології</div>
+                <div class="subject-info">Лекція / Практика • доц. Сенченко О.М. • <span class="aud-badge">ауд. 510</span></div>
+              </td>
+              <td class="dates-col"><b>Лек:</b> щотижня по 02.10<br><b>Пр:</b> щотижня з 09.10 по 06.11</td>
+            </tr>
+            <tr data-start="12:30" data-end="13:50">
+              <td class="num-col">3</td>
+              <td class="time-col">12:30<br>13:50</td>
+              <td class="subject-col">
+                <div class="subject-name">Інтернет-журналістика (Лек) &rarr; Веб-дизайн (Пр)</div>
+                <div class="subject-info">доц. Сенченко О.М. • <span class="aud-badge">ауд. 510</span></div>
+              </td>
+              <td class="dates-col"><b>ІЖ (Лек):</b> щотижня по 02.10<br><b>ВД (Пр):</b> щотижня з 09.10 по 06.11</td>
+            </tr>
+            <tr data-start="14:10" data-end="15:30">
+              <td class="num-col">4</td>
+              <td class="time-col">14:10<br>15:30</td>
+              <td class="subject-col">
+                <div class="subject-name">Інтернет-журналістика</div>
+                <div class="subject-info">Лекція / Практика • доц. Сенченко О.М. • <span class="aud-badge">ауд. 510</span></div>
+              </td>
+              <td class="dates-col"><b>Лек:</b> 11.09<br><b>Пр:</b> щотижня з 18.09 по 06.11</td>
+            </tr>
+          </table>
+        </div>
+
+      </td>
+    </tr>
+  </table>
+
+  <!-- БЛОК ZOOM ІЗ КНОПКАМИ КОПІЮВАННЯ -->
+  <div id="zoom-section" class="zoom-box-full">
+    <div class="zoom-title-full">Підключення Zoom (клікабельні посилання + ID та код доступу)</div>
+    <table class="zoom-grid-table">
+      <tr>
+        <td class="zoom-cell">
+          <div class="zoom-teacher">Заічко О.В. <span style="font-weight: normal; color: var(--text-muted);">(Трудове право)</span></div>
+          <a href="https://kuk-edu-ua.zoom.us/j/82104223445?pwd=zmarjyZDYxak4DuRjM78BDxBDPYlwW.1" target="_blank" class="zoom-action">🔗 Приєднатися до Zoom</a>
+          <div class="zoom-creds">
+            <span>ID: 821 0422 3445</span>
+            <button class="copy-btn" title="Скопіювати ID" onclick="copyText('82104223445', this, 'ID')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <span>| Код: Kuk-2026</span>
+            <button class="copy-btn" title="Скопіювати код" onclick="copyText('Kuk-2026', this, 'Код')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </td>
+        <td class="zoom-cell">
+          <div class="zoom-teacher">Пашкевич М.Ю. <span style="font-weight: normal; color: var(--text-muted);">(Реклама та PR)</span></div>
+          <a href="https://kuk-edu-ua.zoom.us/j/85640710427?pwd=ajA5YUpwRGtpWTRXSVdHek9VYkFKQT09" target="_blank" class="zoom-action">🔗 Приєднатися до Zoom</a>
+          <div class="zoom-creds">
+            <span>ID: 856 4071 0427</span>
+            <button class="copy-btn" title="Скопіювати ID" onclick="copyText('85640710427', this, 'ID')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <span>| Код: Kuk-2022</span>
+            <button class="copy-btn" title="Скопіювати код" onclick="copyText('Kuk-2022', this, 'Код')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </td>
+        <td class="zoom-cell">
+          <div class="zoom-teacher">Парфенюк І.М. <span style="font-weight: normal; color: var(--text-muted);">(PR у соцмережах)</span></div>
+          <a href="https://kuk-edu-ua.zoom.us/j/84625033561?pwd=NscYt7TzqNiWejl7RY8Kv2iuD5ADUz.1" target="_blank" class="zoom-action">🔗 Приєднатися до Zoom</a>
+          <div class="zoom-creds">
+            <span>ID: 846 2503 3561</span>
+            <button class="copy-btn" title="Скопіювати ID" onclick="copyText('84625033561', this, 'ID')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <span>| Код: Kuk-2026</span>
+            <button class="copy-btn" title="Скопіювати код" onclick="copyText('Kuk-2026', this, 'Код')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="zoom-cell">
+          <div class="zoom-teacher">Рибаченко В.Ф. <span style="font-weight: normal; color: var(--text-muted);">(Іміджологія)</span></div>
+          <a href="https://kuk-edu-ua.zoom.us/j/88092431705?pwd=aldJNS9ndVQ0VW1IN2d1Z21BNIZIQT09" target="_blank" class="zoom-action">🔗 Приєднатися до Zoom</a>
+          <div class="zoom-creds">
+            <span>ID: 880 9243 1705</span>
+            <button class="copy-btn" title="Скопіювати ID" onclick="copyText('88092431705', this, 'ID')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <span>| Код: Kuk-2022</span>
+            <button class="copy-btn" title="Скопіювати код" onclick="copyText('Kuk-2022', this, 'Код')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </td>
+        <td class="zoom-cell">
+          <div class="zoom-teacher">Кочубей Л.О. <span style="font-weight: normal; color: var(--text-muted);">(Політичні комунікації)</span></div>
+          <a href="https://kuk-edu-ua.zoom.us/j/87570359012?pwd=SUVRVi9lLzB5L202N2VPVlhmRmFwUT09" target="_blank" class="zoom-action">🔗 Приєднатися до Zoom</a>
+          <div class="zoom-creds">
+            <span>ID: 875 7035 9012</span>
+            <button class="copy-btn" title="Скопіювати ID" onclick="copyText('87570359012', this, 'ID')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <span>| Код: Kuk_2022</span>
+            <button class="copy-btn" title="Скопіювати код" onclick="copyText('Kuk_2022', this, 'Код')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </td>
+        <td class="zoom-cell">
+          <div class="zoom-teacher">Сенченко О.М. <span style="font-weight: normal; color: var(--text-muted);">(Веб-дизайн / Інтернет-журн.)</span></div>
+          <a href="https://kuk-edu-ua.zoom.us/j/85163629941?pwd=dUJ1TDJMQ3ZsbUNMRVUzcFRFNzB4QT09" target="_blank" class="zoom-action">🔗 Приєднатися до Zoom</a>
+          <div class="zoom-creds">
+            <span>ID: 851 6362 9941</span>
+            <button class="copy-btn" title="Скопіювати ID" onclick="copyText('85163629941', this, 'ID')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <span>| Код: Kuk-2022</span>
+            <button class="copy-btn" title="Скопіювати код" onclick="copyText('Kuk-2022', this, 'Код')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="powered-by">powered by Антон x Gemini</div>
+</div>
+
+<!-- Спливаюче сповіщення -->
+<div id="toast" class="toast-notification">
+  <span class="toast-icon">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  </span>
+  <span id="toast-text">ID скопійовано</span>
+</div>
+
+<script>
+  function updateLiveDate() {
+    const now = new Date();
+    const days = ['неділя', 'понеділок', 'вівторок', 'середа', 'четвер', "п'ятниця", 'субота'];
+    const months = ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'];
+    
+    const dayName = days[now.getDay()];
+    const dateNum = now.getDate();
+    const monthName = months[now.getMonth()];
+    
+    const dateEl = document.getElementById('live-date');
+    if (dateEl) {
+      dateEl.textContent = `• ${dayName}, ${dateNum} ${monthName}`;
+    }
+  }
+
+  function initTheme() {
+    const savedTheme = localStorage.getItem('pr14-theme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('theme-icon').textContent = '🌙';
+      document.getElementById('theme-text').textContent = 'Темна';
+    } else {
+      document.body.classList.remove('light-mode');
+      document.getElementById('theme-icon').textContent = '☀️';
+      document.getElementById('theme-text').textContent = 'Світла';
+    }
+  }
+
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    localStorage.setItem('pr14-theme', isLight ? 'light' : 'dark');
+    document.getElementById('theme-icon').textContent = isLight ? '🌙' : '☀️';
+    document.getElementById('theme-text').textContent = isLight ? 'Темна' : 'Світла';
+  }
+
+  function switchDay(dayId, btn) {
+    if (window.innerWidth >= 768) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    document.querySelectorAll('.day-card, #zoom-section').forEach(el => el.classList.remove('active-day'));
+
+    if (dayId === 'zoom') {
+      document.getElementById('zoom-section').classList.add('active-day');
+    } else {
+      const target = document.getElementById('day-' + dayId);
+      if (target) target.classList.add('active-day');
+    }
+  }
+
+  const checkIconSvg = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+  const copyIconSvg = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+  let toastTimeout;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toast-text');
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+
+  function copyText(text, btn, type) {
+    function fallbackCopy(str) {
+      const ta = document.createElement("textarea");
+      ta.value = str;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {
+        console.error(e);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function triggerSuccess() {
+      btn.innerHTML = checkIconSvg;
+      btn.classList.add('copied');
+      showToast(`${type} скопійовано`);
+      setTimeout(() => {
+        btn.innerHTML = copyIconSvg;
+        btn.classList.remove('copied');
+      }, 1500);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(triggerSuccess).catch(() => {
+        fallbackCopy(text);
+        triggerSuccess();
+      });
+    } else {
+      fallbackCopy(text);
+      triggerSuccess();
+    }
+  }
+
+  function updateScheduleState() {
+    updateLiveDate();
+    const now = new Date();
+    const currentDay = now.getDay();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    let activeDayCode = 'mon';
+    if (currentDay >= 1 && currentDay <= 5) {
+      const dayCodes = { 1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri' };
+      activeDayCode = dayCodes[currentDay];
+    }
+    const targetTab = document.querySelector(`.tab-btn[data-day="${currentDay}"]`) || document.querySelector('.tab-btn[data-day="1"]');
+    switchDay(activeDayCode, targetTab);
+
+    document.querySelectorAll('.classes-table tr').forEach(row => {
+      row.classList.remove('current-pair');
+      const existingBadge = row.querySelector('.now-pill');
+      if (existingBadge) existingBadge.remove();
+
+      const dayCard = row.closest('.day-card');
+      const cardDay = parseInt(dayCard.getAttribute('data-day'));
+
+      if (cardDay === currentDay) {
+        const start = row.getAttribute('data-start');
+        const end = row.getAttribute('data-end');
+        if (start && end) {
+          const [sH, sM] = start.split(':').map(Number);
+          const [eH, eM] = end.split(':').map(Number);
+          const startMin = sH * 60 + sM;
+          const endMin = eH * 60 + eM;
+
+          if (currentMinutes >= startMin && currentMinutes <= endMin) {
+            row.classList.add('current-pair');
+            const numCell = row.querySelector('.num-col');
+            if (numCell) {
+              const pill = document.createElement('div');
+              pill.className = 'now-pill';
+              pill.textContent = 'ЗАРАЗ';
+              numCell.prepend(pill);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  initTheme();
+  updateScheduleState();
+  setInterval(updateScheduleState, 60000);
+</script>
