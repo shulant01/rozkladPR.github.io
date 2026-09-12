@@ -27,11 +27,11 @@
       --card-base-bg: #1e293b;
       --card-even-row: #273549;
       
-      /* Напівпрозорий приємний червоний для темної теми */
-      --header-bg: rgba(225, 29, 72, 0.22);
-      --header-text: #fecdd3;
-      --header-tag-bg: rgba(0, 0, 0, 0.35);
-      --header-tag-text: #ffe4e6;
+      /* Рядок заголовка в темній темі: #1E3A8A */
+      --header-bg: #1E3A8A;
+      --header-text: #ffffff;
+      --header-tag-bg: rgba(0, 0, 0, 0.32);
+      --header-tag-text: #e0e7ff;
       
       --row-text: #f1f5f9;
       --row-text-sub: #94a3b8;
@@ -62,11 +62,11 @@
       --card-base-bg: #f1f5f9;
       --card-even-row: #e2e8f0;
       
-      /* Напівпрозорий делікатний рожево-червоний для світлої теми */
-      --header-bg: rgba(225, 29, 72, 0.09);
-      --header-text: #9f1239;
-      --header-tag-bg: rgba(159, 18, 57, 0.12);
-      --header-tag-text: #9f1239;
+      /* Рядок заголовка у світлій темі: темно-сірий */
+      --header-bg: #334155;
+      --header-text: #ffffff;
+      --header-tag-bg: rgba(0, 0, 0, 0.28);
+      --header-tag-text: #f1f5f9;
       
       --row-text: #1e293b;
       --row-text-sub: #475569;
@@ -238,7 +238,6 @@
       border: 1px solid var(--card-border);
     }
 
-    /* Напівпрозорий заголовок для всіх днів */
     .day-header {
       padding: 10px 14px;
       font-weight: 800;
@@ -250,7 +249,7 @@
       align-items: center;
       color: var(--header-text);
       background-color: var(--header-bg);
-      border-bottom: 1px solid rgba(225, 29, 72, 0.15);
+      transition: background-color 0.25s;
     }
 
     .day-header .tag {
@@ -1121,7 +1120,7 @@
     const targetTab = document.querySelector(`.tab-btn[data-day="${targetDayNumber}"]`) || document.querySelector('.tab-btn[data-day="1"]');
     switchDay(activeDayCode, targetTab);
 
-    // Підсвічування пари: чистий пульсуючий червоний кружечок
+    // Підсвічування пари: пульсуючий червоний кружечок
     document.querySelectorAll('.classes-table tr').forEach(row => {
       row.classList.remove('current-pair');
       const existingBadge = row.querySelector('.live-dot-wrap');
@@ -1169,7 +1168,7 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `
-        const CACHE_NAME = 'pr14-v3';
+        const CACHE_NAME = 'pr14-v4';
         self.addEventListener('install', e => self.skipWaiting());
         self.addEventListener('activate', e => e.waitUntil(clients.claim()));
         self.addEventListener('fetch', e => {
@@ -1193,7 +1192,6 @@
 
   setInterval(updateScheduleState, 60000);
 
-  // 🔄 Автоперезавантаження кожні 4 хвилини
   setInterval(() => {
     location.reload();
   }, 4 * 60 * 1000);
